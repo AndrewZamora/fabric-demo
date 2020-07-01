@@ -1,19 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Fabric @img-modified="handleImg($event)" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Fabric from "./components/Fabric.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
+    Fabric
+  },
+  methods: {
+    handleImg(canvas) {
+      // Image Comes Out In base64
+      console.log(canvas.toDataURL());
+    }
   }
-}
+};
 </script>
 
 <style>
