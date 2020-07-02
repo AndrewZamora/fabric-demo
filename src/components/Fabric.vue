@@ -2,7 +2,7 @@
   <div>
     <canvas ref="canvas" :height="height" :width="width"></canvas>
     <button @click="setBackgroundImage()">Add Background</button>
-    <button @click="exportImage">Export Image</button>
+    <button @click="exportImage" id="btn">Export Image</button>
   </div>
 </template>
 
@@ -58,7 +58,9 @@ export default {
       );
     },
     async setBackgroundImage() {
-      this.outputImg = await getImage(this.imgUrl);
+      this.outputImg = await getImage(this.imgUrl).catch(err => {
+        console.log(err);
+      });
       this.inputImg = await getImage(this.imgUrl).catch(err =>
         console.log("err", err)
       );
@@ -80,8 +82,15 @@ export default {
       const image = this.outputImg;
       exportCanvas.add(image);
       exportCanvas.centerObject(image);
-      exportCanvas.renderAll()
-      console.log(exportCanvas.toDataURL());
+      exportCanvas.renderAll();
+
+      exportCanvas.getElement().toBlob(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = name;
+        link.click()
+      });
     }
   }
 };
