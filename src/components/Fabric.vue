@@ -1,18 +1,35 @@
 <template>
   <div>
-    <canvas ref="canvas" height="600" width="400"></canvas>
-    <button
-      @click="test('https://images.unsplash.com/photo-1578847298326-10909089ccdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1275&q=80')"
-    >test</button>
+    <canvas ref="canvas" :height="height" :width="width"></canvas>
+    <button @click="setBackgroundImage()">Add Background</button>
+    <button @click="exportImage">Export Image</button>
   </div>
 </template>
 
 <script>
 import { fabric } from "fabric";
+const getImage = url => {
+  return new Promise(resolve => {
+    fabric.Image.fromURL(
+      url,
+      img => {
+        resolve(img);
+      },
+      { crossOrigin: "anonymous" }
+    );
+  });
+};
 export default {
+  props: {
+    imgUrl: String,
+    height: Number,
+    width: Number
+  },
   data() {
     return {
-      canvas: null
+      canvas: null,
+      inputImg: null,
+      outputImg: null
     };
   },
   mounted() {
@@ -23,8 +40,6 @@ export default {
       fabric.Image.fromURL(
         url,
         img => {
-          img.scaleToWidth(400);
-          img.scaleToHeight(600);
           this.canvas.add(img);
           const text = new fabric.Textbox("Write", {
             left: 250,
@@ -34,10 +49,6 @@ export default {
             fill: "pink",
             editable: true
           });
-          // const group = new fabric.Group([img, text], {
-          //   left: 50,
-          //   top: 50
-          // });
           this.canvas.add(text);
           this.canvas.on("object:modified", () => {
             this.$emit("img-modified", this.canvas);
@@ -45,6 +56,32 @@ export default {
         },
         { crossOrigin: "anonymous" }
       );
+    },
+    async setBackgroundImage() {
+      this.outputImg = await getImage(this.imgUrl);
+      this.inputImg = await getImage(this.imgUrl).catch(err =>
+        console.log("err", err)
+      );
+      const imgDimensions = {
+        scaleX: this.width / this.inputImg.width,
+        scaleY: this.height / this.inputImg.height
+      };
+      this.canvas.setBackgroundImage(
+        this.inputImg,
+        this.canvas.renderAll.bind(this.canvas),
+        imgDimensions
+      );
+    },
+    exportImage() {
+      const canvas = document.createElement("canvas");
+      canvas.width = this.outputImg.width;
+      canvas.height = this.outputImg.height;
+      const exportCanvas = new fabric.Canvas(canvas);
+      const image = this.outputImg;
+      exportCanvas.add(image);
+      exportCanvas.centerObject(image);
+      exportCanvas.renderAll()
+      console.log(exportCanvas.toDataURL());
     }
   }
 };
