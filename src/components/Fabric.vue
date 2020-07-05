@@ -2,7 +2,8 @@
   <div>
     <canvas ref="canvas" :height="height" :width="width"></canvas>
     <button @click="setBackgroundImage()">Add Background</button>
-    <button @click="exportImage" id="btn">Export Image</button>
+    <button @click="exportImage">Export Image</button>
+    <button @click="addTextInput">Add Text</button>
   </div>
 </template>
 
@@ -29,7 +30,7 @@ export default {
     return {
       canvas: null,
       inputImg: null,
-      outputImg: null
+      outputImg: null,
     };
   },
   mounted() {
@@ -58,12 +59,10 @@ export default {
       );
     },
     async setBackgroundImage() {
-      this.outputImg = await getImage(this.imgUrl).catch(err => {
-        console.log(err);
-      });
       this.inputImg = await getImage(this.imgUrl).catch(err =>
         console.log("err", err)
       );
+      this.outputImg = JSON.stringify(this.inputImg);
       const imgDimensions = {
         scaleX: this.width / this.inputImg.width,
         scaleY: this.height / this.inputImg.height
@@ -74,23 +73,46 @@ export default {
         imgDimensions
       );
     },
-    exportImage() {
-      const canvas = document.createElement("canvas");
-      canvas.width = this.outputImg.width;
-      canvas.height = this.outputImg.height;
-      const exportCanvas = new fabric.Canvas(canvas);
-      const image = this.outputImg;
-      exportCanvas.add(image);
-      exportCanvas.centerObject(image);
-      exportCanvas.renderAll();
-
-      exportCanvas.getElement().toBlob(blob => {
+    async exportImage() {
+      // const canvas = document.createElement("canvas");
+      // canvas.width = this.outputImg.width;
+      // canvas.height = this.outputImg.height;
+      // const exportCanvas = new fabric.Canvas(canvas);
+      // const image = await getImage(this.imgUrl);
+      // exportCanvas.add(image);
+      // exportCanvas.centerObject(image);
+      // exportCanvas.renderAll();
+      // console.log(this.canvas);
+      // console.log(exportCanvas);
+      const originalDimensions = JSON.parse(this.outputImg)
+      this.canvas.backgroundImage.height = originalDimensions.height;
+      this.canvas.backgroundImage.height = originalDimensions.width;
+      this.canvas.backgroundImage.scaleX = 1;
+      this.canvas.backgroundImage.scaleY = 1;
+      this.canvas.setHeight(originalDimensions.height);
+      this.canvas.setWidth(originalDimensions.width);
+      console.log(this.canvas);
+      this.canvas.getElement().toBlob(blob => {
         const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = blobUrl;
         link.download = name;
-        link.click()
+        link.click();
       });
+    },
+    addTextInput() {
+      const textInput = new fabric.Textbox("Tap And Type", {
+        width: 200,
+        height: 200,
+        top: 250,
+        left: 5,
+        fontSize: 20,
+        fill: 'pink',
+        textAlign: "center"
+      });
+      textInput.enterEditing();
+      textInput.hiddenTextarea.focus();
+      this.canvas.add(textInput);
     }
   }
 };
