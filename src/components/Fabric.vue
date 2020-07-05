@@ -30,7 +30,7 @@ export default {
     return {
       canvas: null,
       inputImg: null,
-      outputImg: null,
+      outputImg: null
     };
   },
   mounted() {
@@ -74,30 +74,22 @@ export default {
       );
     },
     async exportImage() {
-      // const canvas = document.createElement("canvas");
-      // canvas.width = this.outputImg.width;
-      // canvas.height = this.outputImg.height;
-      // const exportCanvas = new fabric.Canvas(canvas);
-      // const image = await getImage(this.imgUrl);
-      // exportCanvas.add(image);
-      // exportCanvas.centerObject(image);
-      // exportCanvas.renderAll();
-      // console.log(this.canvas);
-      // console.log(exportCanvas);
-      const originalDimensions = JSON.parse(this.outputImg)
-      this.canvas.backgroundImage.height = originalDimensions.height;
-      this.canvas.backgroundImage.height = originalDimensions.width;
-      this.canvas.backgroundImage.scaleX = 1;
-      this.canvas.backgroundImage.scaleY = 1;
-      this.canvas.setHeight(originalDimensions.height);
-      this.canvas.setWidth(originalDimensions.width);
-      console.log(this.canvas);
-      this.canvas.getElement().toBlob(blob => {
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = name;
-        link.click();
+      const json = this.canvas.toJSON();
+      json.backgroundImage.scaleX = 1;
+      json.backgroundImage.scaleY = 1;
+      this.canvas.clear();
+      this.canvas.renderAll();
+      this.canvas.loadFromJSON(json, () => {
+        this.canvas.setWidth(1275);
+        this.canvas.setHeight(1700);
+        this.canvas.renderAll();
+        this.canvas.getElement().toBlob(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = name;
+          link.click();
+        });
       });
     },
     addTextInput() {
@@ -107,7 +99,7 @@ export default {
         top: 250,
         left: 5,
         fontSize: 20,
-        fill: 'pink',
+        fill: "pink",
         textAlign: "center"
       });
       textInput.enterEditing();
