@@ -1,9 +1,11 @@
 <template>
-  <div>
+  <div class="fabric-container">
     <canvas ref="canvas" :height="height" :width="width"></canvas>
-    <button @click="setBackgroundImage()">Add Background</button>
-    <button @click="exportImage">Export Image</button>
-    <button @click="addTextInput">Add Text</button>
+    <div class="fabric-btn-container">
+      <button @click="setBackgroundImage()">Add Background</button>
+      <button @click="exportImage">Export Image</button>
+      <button @click="addTextInput">Add Text</button>
+    </div>
   </div>
 </template>
 
@@ -35,6 +37,7 @@ export default {
   },
   mounted() {
     this.canvas = new fabric.Canvas(this.$refs.canvas);
+    fabric.Object.NUM_FRACTION_DIGITS = 8;
   },
   methods: {
     test(url) {
@@ -75,35 +78,40 @@ export default {
     },
     async exportImage() {
       const json = this.canvas.toJSON();
+      console.log(json)
+      json.objects[0].scaleX = this.width / JSON.parse(this.outputImg).width * 10;
+      json.objects[0].scaleY = this.height / JSON.parse(this.outputImg).height * 10;
+      json.objects[0].left = (json.objects[0].left * json.objects[0].scaleX) - (json.objects[0].height);
+      json.objects[0].top =  (json.objects[0].top * json.objects[0].scaleY) - (json.objects[0].scaleY * json.objects[0].height);
       json.backgroundImage.scaleX = 1;
       json.backgroundImage.scaleY = 1;
+      console.log(json)
       this.canvas.clear();
       this.canvas.renderAll();
       this.canvas.loadFromJSON(json, () => {
-        this.canvas.setWidth(1275);
-        this.canvas.setHeight(1700);
+        this.canvas.setWidth(JSON.parse(this.outputImg).width);
+        this.canvas.setHeight(JSON.parse(this.outputImg).height);
         this.canvas.renderAll();
-        this.canvas.getElement().toBlob(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = blobUrl;
-          link.download = name;
-          link.click();
-        });
+        // this.canvas.getElement().toBlob(blob => {
+        //   const blobUrl = URL.createObjectURL(blob);
+        //   const link = document.createElement("a");
+        //   link.href = blobUrl;
+        //   link.download = name;
+        //   link.click();
+        // });
       });
     },
     addTextInput() {
-      const textInput = new fabric.Textbox("Tap And Type", {
+      const textInput = new fabric.Textbox("Click And Type", {
         width: 200,
         height: 200,
         top: 250,
         left: 5,
         fontSize: 20,
-        fill: "pink",
-        textAlign: "center"
+        fill: "white",
+        textAlign: "center",
+        lockUniScaling: true
       });
-      textInput.enterEditing();
-      textInput.hiddenTextarea.focus();
       this.canvas.add(textInput);
     }
   }
@@ -113,5 +121,14 @@ export default {
 <style scoped>
 canvas {
   border: red dashed 3px;
+}
+.fabric-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.fabric-btn-container {
+  padding: 20px 0;
 }
 </style>

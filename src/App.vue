@@ -4,13 +4,13 @@
       :height="600"
       :width="400"
       @img-modified="handleImg($event)"
-      :imgUrl="'https://images.unsplash.com/photo-1578847298326-10909089ccdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1275&q=80'"
+      :imgUrl="'https://images.unsplash.com/photo-1593729383954-d24da9783be4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'"
     />
   </div>
 </template>
 
 <script>
-import Fabric from "./components/Fabric.vue";
+import Fabric from "./components/fabric.vue";
 
 export default {
   name: "App",
