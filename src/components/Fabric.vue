@@ -37,6 +37,7 @@ export default {
   },
   mounted() {
     this.canvas = new fabric.Canvas(this.$refs.canvas);
+    // http://fabricjs.com/fabric-gotchas
     fabric.Object.NUM_FRACTION_DIGITS = 8;
   },
   methods: {
@@ -78,27 +79,27 @@ export default {
     },
     async exportImage() {
       const json = this.canvas.toJSON();
-      console.log(json)
-      json.objects[0].scaleX = this.width / JSON.parse(this.outputImg).width * 10;
-      json.objects[0].scaleY = this.height / JSON.parse(this.outputImg).height * 10;
-      json.objects[0].left = (json.objects[0].left * json.objects[0].scaleX) - (json.objects[0].height);
-      json.objects[0].top =  (json.objects[0].top * json.objects[0].scaleY) - (json.objects[0].scaleY * json.objects[0].height);
+      const exportScaleX = (this.width / JSON.parse(this.outputImg).width);
+      const exportScaleY = (this.height / JSON.parse(this.outputImg).height);
+      json.objects[0].scaleX = json.objects[0].scaleX / exportScaleX;
+      json.objects[0].scaleY = json.objects[0].scaleY / exportScaleY;
+      json.objects[0].left = (json.objects[0].left / exportScaleX); 
+      json.objects[0].top =  (json.objects[0].top /exportScaleY);
       json.backgroundImage.scaleX = 1;
       json.backgroundImage.scaleY = 1;
-      console.log(json)
       this.canvas.clear();
       this.canvas.renderAll();
       this.canvas.loadFromJSON(json, () => {
         this.canvas.setWidth(JSON.parse(this.outputImg).width);
         this.canvas.setHeight(JSON.parse(this.outputImg).height);
         this.canvas.renderAll();
-        // this.canvas.getElement().toBlob(blob => {
-        //   const blobUrl = URL.createObjectURL(blob);
-        //   const link = document.createElement("a");
-        //   link.href = blobUrl;
-        //   link.download = name;
-        //   link.click();
-        // });
+        this.canvas.getElement().toBlob(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = name;
+          link.click();
+        });
       });
     },
     addTextInput() {
