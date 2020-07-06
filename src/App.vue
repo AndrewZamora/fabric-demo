@@ -4,7 +4,7 @@
       :height="600"
       :width="400"
       @img-modified="handleImg($event)"
-      :imgUrl="'https://images.unsplash.com/photo-1494352970903-9e3043c6b57e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2602&q=80'"
+      :imgUrl="'https://images.unsplash.com/photo-1593955448988-4000a09fda9c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'"
     />
   </div>
 </template>
