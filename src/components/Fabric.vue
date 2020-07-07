@@ -48,7 +48,6 @@ export default {
       this.outputImg = JSON.stringify(this.inputImg);
       const widthAspectRatio =
         JSON.parse(this.outputImg).height / JSON.parse(this.outputImg).width;
-      console.log("widthAspectRatio", widthAspectRatio);
       this.canvas.setWidth(this.height / widthAspectRatio);
       this.canvas.setHeight(this.height);
       const imgDimensions = {
