@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <Fabric
-      :height="600"
+      :height="800"
       :width="400"
       @img-modified="handleImg($event)"
-      :imgUrl="'https://images.unsplash.com/photo-1593955448988-4000a09fda9c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'"
+      :imgUrl="'https://images.unsplash.com/photo-1581926760935-ca9b11a7b888?ixlib=rb-1.2.1&auto=format&fit=crop&w=564&q=80'"
     />
   </div>
 </template>

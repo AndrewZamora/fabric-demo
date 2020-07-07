@@ -1,6 +1,6 @@
 <template>
   <div class="fabric-container">
-    <canvas ref="canvas" :height="height" :width="width"></canvas>
+    <canvas ref="canvas"></canvas>
     <div class="fabric-btn-container">
       <button @click="setBackgroundImage()">Add Background</button>
       <button @click="exportImage">Export Image</button>
@@ -41,35 +41,19 @@ export default {
     fabric.Object.NUM_FRACTION_DIGITS = 8;
   },
   methods: {
-    test(url) {
-      fabric.Image.fromURL(
-        url,
-        img => {
-          this.canvas.add(img);
-          const text = new fabric.Textbox("Write", {
-            left: 250,
-            top: 280,
-            fontSize: 15,
-            fontFamily: "Verdana",
-            fill: "pink",
-            editable: true
-          });
-          this.canvas.add(text);
-          this.canvas.on("object:modified", () => {
-            this.$emit("img-modified", this.canvas);
-          });
-        },
-        { crossOrigin: "anonymous" }
-      );
-    },
     async setBackgroundImage() {
       this.inputImg = await getImage(this.imgUrl).catch(err =>
         console.log("err", err)
       );
       this.outputImg = JSON.stringify(this.inputImg);
+      const widthAspectRatio =
+        JSON.parse(this.outputImg).height / JSON.parse(this.outputImg).width;
+      console.log("widthAspectRatio", widthAspectRatio);
+      this.canvas.setWidth(this.height / widthAspectRatio);
+      this.canvas.setHeight(this.height);
       const imgDimensions = {
-        scaleX: this.width / this.inputImg.width,
-        scaleY: this.height / this.inputImg.height
+        scaleX: this.canvas.getWidth() / this.inputImg.width,
+        scaleY: this.canvas.getHeight() / this.inputImg.height
       };
       this.canvas.setBackgroundImage(
         this.inputImg,
