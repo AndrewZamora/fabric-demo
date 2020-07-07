@@ -79,12 +79,16 @@ export default {
     },
     async exportImage() {
       const json = this.canvas.toJSON();
-      const exportScaleX = (this.width / JSON.parse(this.outputImg).width);
-      const exportScaleY = (this.height / JSON.parse(this.outputImg).height);
-      json.objects[0].scaleX = json.objects[0].scaleX / exportScaleX;
-      json.objects[0].scaleY = json.objects[0].scaleY / exportScaleY;
-      json.objects[0].left = (json.objects[0].left / exportScaleX); 
-      json.objects[0].top =  (json.objects[0].top /exportScaleY);
+      const exportScaleX = this.width / JSON.parse(this.outputImg).width;
+      const exportScaleY = this.height / JSON.parse(this.outputImg).height;
+      json.objects.forEach(object => {
+        if (object.type === "textbox") {
+          object.scaleX = object.scaleX / exportScaleX;
+          object.scaleY = object.scaleY / exportScaleY;
+          object.left = object.left / exportScaleX;
+          object.top = object.top / exportScaleY;
+        }
+      });
       json.backgroundImage.scaleX = 1;
       json.backgroundImage.scaleY = 1;
       this.canvas.clear();
