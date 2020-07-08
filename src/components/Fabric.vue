@@ -46,8 +46,7 @@ export default {
         console.log("err", err)
       );
       this.outputImg = JSON.stringify(this.inputImg);
-      const widthAspectRatio =
-        JSON.parse(this.outputImg).height / JSON.parse(this.outputImg).width;
+      const widthAspectRatio =this.inputImg.height / this.inputImg.width;
       this.canvas.setWidth(this.height / widthAspectRatio);
       this.canvas.setHeight(this.height);
       const imgDimensions = {
@@ -62,7 +61,7 @@ export default {
     },
     async exportImage() {
       const json = this.canvas.toJSON();
-      const exportScaleX = this.width / JSON.parse(this.outputImg).width;
+      const exportScaleX = this.canvas.getWidth() / JSON.parse(this.outputImg).width;
       const exportScaleY = this.height / JSON.parse(this.outputImg).height;
       json.objects.forEach(object => {
         if (object.type === "textbox") {
