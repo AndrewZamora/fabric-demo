@@ -1,11 +1,12 @@
 <template>
   <div class="fabric-container">
-    <canvas ref="canvas"></canvas>
     <div class="fabric-btn-container">
       <button @click="setBackgroundImage()">Add Background</button>
       <button @click="exportImage">Export Image</button>
       <button @click="addTextInput">Add Text</button>
+      <button @click="changeTextColor"> Change Color</button>
     </div>
+    <canvas ref="canvas"></canvas>
   </div>
 </template>
 
@@ -22,11 +23,25 @@ const getImage = url => {
     );
   });
 };
+const loadFromJSON = (canvas, json) => {
+  return new Promise(resolve => {
+    canvas.loadFromJSON(json, () => {
+      resolve();
+    });
+  });
+};
+const getBlob = canvas => {
+  return new Promise(resolve => {
+    canvas.getElement().toBlob(blob => resolve(blob));
+  });
+};
 export default {
   props: {
     imgUrl: String,
     height: Number,
-    width: Number
+    width: Number,
+    textSettings: Object,
+    activeTextBoxColor: Number
   },
   data() {
     return {
@@ -44,7 +59,8 @@ export default {
       this.backgroundImage = await getImage(this.imgUrl).catch(err =>
         console.log("err", err)
       );
-      const widthAspectRatio = this.backgroundImage.height / this.backgroundImage.width;
+      const widthAspectRatio =
+        this.backgroundImage.height / this.backgroundImage.width;
       this.canvas.setWidth(this.height / widthAspectRatio);
       this.canvas.setHeight(this.height);
       const imgDimensions = {
@@ -73,48 +89,46 @@ export default {
       json.backgroundImage.scaleY = 1;
       this.canvas.clear();
       this.canvas.renderAll();
-      this.canvas.loadFromJSON(json, () => {
-        this.canvas.setWidth(this.backgroundImage.width);
-        this.canvas.setHeight(this.backgroundImage.height);
-        this.canvas.renderAll();
-        this.canvas.getElement().toBlob(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = blobUrl;
-          link.download = name;
-          link.click();
-        });
-      });
+      await loadFromJSON(this.canvas, json);
+      this.canvas.setWidth(this.backgroundImage.width);
+      this.canvas.setHeight(this.backgroundImage.height);
+      this.canvas.renderAll();
+      this.$emit("export", true);
+      const blob = await getBlob(this.canvas);
+      const blobUrl = await URL.createObjectURL(blob);
+      this.$emit("blob", blobUrl);
+      this.$emit("export", false);
     },
     addTextInput() {
-      const textInput = new fabric.Textbox("Click And Type", {
+      let defaultTextSettings = {
         fontSize: 40,
-        fill: "red",
+        fill: "black",
         top: 0.5 * this.canvas.getHeight(),
         left: 0.5 * this.canvas.getWidth(),
-        originX: 'center',
-        originY: 'center',
+        originX: "center",
+        originY: "center",
         lockUniScaling: true,
-        textAlign: 'center',
-        width: this.canvas.getWidth() * 0.50
-      });
+        textAlign: "center",
+        width: 0.5 * this.canvas.getWidth()
+      };
+      if (this.textSettings) {
+        Object.keys(this.textSettings).forEach(key => {
+          defaultTextSettings[key] = this.textSettings[key];
+        });
+      }
+      const textInput = new fabric.Textbox(
+        "Click And Type",
+        defaultTextSettings
+      );
       this.canvas.add(textInput);
+    },
+    changeTextColor() {
+      this.canvas.getActiveObject().set("fill",'purple');
+      this.canvas.renderAll();
     }
   }
 };
 </script>
 
 <style scoped>
-canvas {
-  border: red dashed 3px;
-}
-.fabric-container {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-}
-.fabric-btn-container {
-  padding: 20px 0;
-}
 </style>
