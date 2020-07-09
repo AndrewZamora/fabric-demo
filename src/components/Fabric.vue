@@ -31,8 +31,7 @@ export default {
   data() {
     return {
       canvas: null,
-      inputImg: null,
-      outputImg: null
+      backgroundImage: null
     };
   },
   mounted() {
@@ -42,27 +41,26 @@ export default {
   },
   methods: {
     async setBackgroundImage() {
-      this.inputImg = await getImage(this.imgUrl).catch(err =>
+      this.backgroundImage = await getImage(this.imgUrl).catch(err =>
         console.log("err", err)
       );
-      this.outputImg = JSON.stringify(this.inputImg);
-      const widthAspectRatio =this.inputImg.height / this.inputImg.width;
+      const widthAspectRatio = this.backgroundImage.height / this.backgroundImage.width;
       this.canvas.setWidth(this.height / widthAspectRatio);
       this.canvas.setHeight(this.height);
       const imgDimensions = {
-        scaleX: this.canvas.getWidth() / this.inputImg.width,
-        scaleY: this.canvas.getHeight() / this.inputImg.height
+        scaleX: this.canvas.getWidth() / this.backgroundImage.width,
+        scaleY: this.canvas.getHeight() / this.backgroundImage.height
       };
       this.canvas.setBackgroundImage(
-        this.inputImg,
+        this.backgroundImage,
         this.canvas.renderAll.bind(this.canvas),
         imgDimensions
       );
     },
     async exportImage() {
       const json = this.canvas.toJSON();
-      const exportScaleX = this.canvas.getWidth() / JSON.parse(this.outputImg).width;
-      const exportScaleY = this.height / JSON.parse(this.outputImg).height;
+      const exportScaleX = this.canvas.getWidth() / this.backgroundImage.width;
+      const exportScaleY = this.height / this.backgroundImage.height;
       json.objects.forEach(object => {
         if (object.type === "textbox") {
           object.scaleX = object.scaleX / exportScaleX;
@@ -76,8 +74,8 @@ export default {
       this.canvas.clear();
       this.canvas.renderAll();
       this.canvas.loadFromJSON(json, () => {
-        this.canvas.setWidth(JSON.parse(this.outputImg).width);
-        this.canvas.setHeight(JSON.parse(this.outputImg).height);
+        this.canvas.setWidth(this.backgroundImage.width);
+        this.canvas.setHeight(this.backgroundImage.height);
         this.canvas.renderAll();
         this.canvas.getElement().toBlob(blob => {
           const blobUrl = URL.createObjectURL(blob);
@@ -90,14 +88,15 @@ export default {
     },
     addTextInput() {
       const textInput = new fabric.Textbox("Click And Type", {
-        width: 200,
-        height: 200,
-        top: 250,
-        left: 5,
-        fontSize: 20,
-        fill: "white",
-        textAlign: "center",
-        lockUniScaling: true
+        fontSize: 40,
+        fill: "red",
+        top: 0.5 * this.canvas.getHeight(),
+        left: 0.5 * this.canvas.getWidth(),
+        originX: 'center',
+        originY: 'center',
+        lockUniScaling: true,
+        textAlign: 'center',
+        width: this.canvas.getWidth() * 0.50
       });
       this.canvas.add(textInput);
     }
