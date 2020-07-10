@@ -10,7 +10,6 @@
         :height="800"
         :width="400"
         @blob="handleImg($event)"
-        :textSettings="textSettings"
         :imgUrl="'https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'"
         @export="handleExport($event)"
         :activeTextBoxColor="'purple'"
@@ -31,9 +30,6 @@ export default {
   },
   data() {
     return {
-      textSettings: {
-        fill: "white",
-      },
       exporting: null,
       textboxes: [{fill: "pink"}, {fill: "orange"}]
     };

@@ -3,7 +3,6 @@
     <div class="fabric-btn-container">
       <button @click="setBackgroundImage()">Add Background</button>
       <button @click="exportImage">Export Image</button>
-      <button @click="addTextInput">Add Text</button>
       <button @click="changeTextColor">Change Color</button>
     </div>
     <canvas ref="canvas"></canvas>
@@ -100,34 +99,7 @@ export default {
       this.$emit("blob", blobUrl);
       this.$emit("export", false);
     },
-    addTextInput() {
-      let defaultTextSettings = {
-        fontSize: 40,
-        fill: "black",
-        top: 0.5 * this.canvas.getHeight(),
-        left: 0.5 * this.canvas.getWidth(),
-        originX: "center",
-        originY: "center",
-        lockUniScaling: true,
-        textAlign: "center",
-        width: 0.5 * this.canvas.getWidth()
-      };
-      if (this.textSettings) {
-        Object.keys(this.textSettings).forEach(key => {
-          defaultTextSettings[key] = this.textSettings[key];
-        });
-      }
-      const textInput = new fabric.Textbox(
-        "Click And Type",
-        defaultTextSettings
-      );
-      this.canvas.add(textInput);
-    },
-    changeTextColor() {
-      this.canvas.getActiveObject().set("fill", "purple");
-      this.canvas.renderAll();
-    },
-    test(newTextbox) {
+    addTextbox(newTextbox) {
       let defaultTextSettings = {
         fontSize: 40,
         fill: "black",
@@ -149,6 +121,10 @@ export default {
         defaultTextSettings
       );
       this.canvas.add(textInput);
+    },
+    changeTextColor() {
+      this.canvas.getActiveObject().set("fill", "purple");
+      this.canvas.renderAll();
     }
   },
   computed: {
@@ -159,8 +135,7 @@ export default {
   watch: {
     textInput(newData, oldData) {
       if (newData.length > oldData.length) {
-        console.log(newData)
-        this.test(newData[newData.length - 1]);
+        this.addTextbox(newData[newData.length - 1]);
       }
     }
   }
