@@ -4,7 +4,7 @@
       <button @click="setBackgroundImage()">Add Background</button>
       <button @click="exportImage">Export Image</button>
       <button @click="addTextInput">Add Text</button>
-      <button @click="changeTextColor"> Change Color</button>
+      <button @click="changeTextColor">Change Color</button>
     </div>
     <canvas ref="canvas"></canvas>
   </div>
@@ -41,7 +41,8 @@ export default {
     height: Number,
     width: Number,
     textSettings: Object,
-    activeTextBoxColor: Number
+    activeTextBoxColor: String,
+    textboxes: Array
   },
   data() {
     return {
@@ -123,8 +124,44 @@ export default {
       this.canvas.add(textInput);
     },
     changeTextColor() {
-      this.canvas.getActiveObject().set("fill",'purple');
+      this.canvas.getActiveObject().set("fill", "purple");
       this.canvas.renderAll();
+    },
+    test(newTextbox) {
+      let defaultTextSettings = {
+        fontSize: 40,
+        fill: "black",
+        top: 0.5 * this.canvas.getHeight(),
+        left: 0.5 * this.canvas.getWidth(),
+        originX: "center",
+        originY: "center",
+        lockUniScaling: true,
+        textAlign: "center",
+        width: 0.5 * this.canvas.getWidth()
+      };
+      if (newTextbox) {
+        Object.keys(newTextbox).forEach(key => {
+          defaultTextSettings[key] = newTextbox[key];
+        });
+      }
+      const textInput = new fabric.Textbox(
+        "Click And Type",
+        defaultTextSettings
+      );
+      this.canvas.add(textInput);
+    }
+  },
+  computed: {
+    textInput() {
+      return this.textboxes;
+    }
+  },
+  watch: {
+    textInput(newData, oldData) {
+      if (newData.length > oldData.length) {
+        console.log(newData)
+        this.test(newData[newData.length - 1]);
+      }
     }
   }
 };

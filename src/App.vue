@@ -4,6 +4,7 @@
       <p>Exported</p>
     </div>
     <div class="container">
+      <button @click="addTextbox({fill:'red'})">Add Text</button>
     <div v-show="exporting === null">
       <Fabric
         :height="800"
@@ -13,6 +14,7 @@
         :imgUrl="'https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'"
         @export="handleExport($event)"
         :activeTextBoxColor="'purple'"
+        :textboxes="textboxes"
       />
     </div>
     </div>
@@ -32,7 +34,8 @@ export default {
       textSettings: {
         fill: "white",
       },
-      exporting: null
+      exporting: null,
+      textboxes: [{fill: "pink"}, {fill: "orange"}]
     };
   },
   methods: {
@@ -50,7 +53,9 @@ export default {
       } else {
         this.exporting = false;
       }
-      
+    },
+    addTextbox(newTextbox) {
+      this.textboxes = [...this.textboxes, newTextbox];
     }
   }
 };
