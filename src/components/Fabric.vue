@@ -1,8 +1,5 @@
 <template>
   <div class="fabric-container">
-    <div class="fabric-btn-container">
-      <button @click="changeTextColor">Change Color</button>
-    </div>
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -37,9 +34,9 @@ export default {
     imgUrl: String,
     height: Number,
     width: Number,
-    activeTextBoxColor: String,
     textboxes: Array,
-    triggerExport: Boolean
+    triggerExport: Boolean,
+    activeObject: Object
   },
   data() {
     return {
@@ -124,28 +121,29 @@ export default {
       this.canvas.renderAll();
     }
   },
-  computed: {
-    textInput() {
-      return this.textboxes;
-    },
-    image() {
-      return this.imgUrl;
-    }
-  },
   watch: {
-    textInput(newData, oldData) {
+    textboxes(newData, oldData) {
       if (newData.length > oldData.length) {
         this.addTextbox(newData[newData.length - 1]);
       }
     },
-    image(newData, oldData) {
-      if(newData !== oldData) {
+    imgUrl(newData, oldData) {
+      if (newData !== oldData) {
         this.setBackgroundImage(newData);
       }
     },
     triggerExport(newData) {
-      if(newData === true) {
+      if (newData === true) {
         this.exportImage();
+      }
+    },
+    activeObject(newData) {
+      const activeObject = this.canvas.getActiveObject();
+      if (activeObject && newData) {
+        Object.keys(newData).forEach(key => {
+          this.canvas.getActiveObject().set(key,newData[key]);
+        });
+        this.canvas.renderAll();
       }
     }
   }

@@ -7,13 +7,14 @@
       <button @click="addTextbox({fill:'red'})">Add Text</button>
       <button @click="changeImage">Change Image</button>
       <button @click="handleExport">Export Image</button>
+      <button @click="updateActiveObject">Update Selected Item</button>
       <div v-show="exported === false">
         <Fabric
           :height="800"
           :width="400"
           :imgUrl="image"
-          :activeTextBoxColor="'purple'"
           :textboxes="textboxes"
+          :activeObject="activeObject"
           :triggerExport="triggerExport"
           @image-blob="handleImg($event)"
         />
@@ -37,7 +38,8 @@ export default {
       image:
         "https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80",
       triggerExport: false,
-      imageBlob: null
+      imageBlob: null,
+      activeObject: null
     };
   },
   methods: {
@@ -59,6 +61,9 @@ export default {
     changeImage() {
       this.image =
         "https://images.unsplash.com/photo-1594201741863-2bf316674ea3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80";
+    },
+    updateActiveObject() {
+      this.activeObject = {fill: "green"};
     }
   }
 };
