@@ -1,22 +1,23 @@
 <template>
   <div id="app">
-    <div v-if="exporting" class="exported">
+    <div v-if="exported" class="exported">
       <p>Exported</p>
     </div>
     <div class="container">
       <button @click="addTextbox({fill:'red'})">Add Text</button>
       <button @click="changeImage">Change Image</button>
-    <div v-show="exporting === null">
-      <Fabric
-        :height="800"
-        :width="400"
-        @blob="handleImg($event)"
-        :imgUrl="image"
-        @export="handleExport($event)"
-        :activeTextBoxColor="'purple'"
-        :textboxes="textboxes"
-      />
-    </div>
+      <button @click="handleExport">Export Image</button>
+      <div v-show="exported === false">
+        <Fabric
+          :height="800"
+          :width="400"
+          :imgUrl="image"
+          :activeTextBoxColor="'purple'"
+          :textboxes="textboxes"
+          :triggerExport="triggerExport"
+          @image-blob="handleImg($event)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -31,32 +32,33 @@ export default {
   },
   data() {
     return {
-      exporting: null,
-      textboxes: [{fill: "pink"}, {fill: "orange"}],
-      image: 'https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'
+      exported: false,
+      textboxes: [{ fill: "pink" }, { fill: "orange" }],
+      image:
+        "https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80",
+      triggerExport: false,
+      imageBlob: null
     };
   },
   methods: {
     handleImg(blobUrl) {
-      console.log(blobUrl)
+      console.log(blobUrl);
+      this.handleExport();
       // const link = document.createElement("a");
       // link.href = blobUrl;
       // link.download = name;
       // link.click();
     },
-    handleExport(event) {
-      console.log(event)
-      if(event === true) {
-        this.exporting = true;
-      } else {
-        this.exporting = false;
-      }
+    handleExport() {
+      this.exported = true;
+      this.triggerExport = !this.triggerExport;
     },
     addTextbox(newTextbox) {
       this.textboxes = [...this.textboxes, newTextbox];
     },
     changeImage() {
-      this.image = 'https://images.unsplash.com/photo-1594201741863-2bf316674ea3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
+      this.image =
+        "https://images.unsplash.com/photo-1594201741863-2bf316674ea3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80";
     }
   }
 };

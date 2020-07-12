@@ -1,7 +1,6 @@
 <template>
   <div class="fabric-container">
     <div class="fabric-btn-container">
-      <button @click="exportImage">Export Image</button>
       <button @click="changeTextColor">Change Color</button>
     </div>
     <canvas ref="canvas"></canvas>
@@ -38,9 +37,9 @@ export default {
     imgUrl: String,
     height: Number,
     width: Number,
-    textSettings: Object,
     activeTextBoxColor: String,
-    textboxes: Array
+    textboxes: Array,
+    triggerExport: Boolean
   },
   data() {
     return {
@@ -93,11 +92,9 @@ export default {
       this.canvas.setWidth(this.backgroundImage.width);
       this.canvas.setHeight(this.backgroundImage.height);
       this.canvas.renderAll();
-      this.$emit("export", true);
       const blob = await getBlob(this.canvas);
       const blobUrl = await URL.createObjectURL(blob);
-      this.$emit("blob", blobUrl);
-      this.$emit("export", false);
+      this.$emit("image-blob", blobUrl);
     },
     addTextbox(newTextbox) {
       let defaultTextSettings = {
@@ -144,6 +141,11 @@ export default {
     image(newData, oldData) {
       if(newData !== oldData) {
         this.setBackgroundImage(newData);
+      }
+    },
+    triggerExport(newData) {
+      if(newData === true) {
+        this.exportImage();
       }
     }
   }
