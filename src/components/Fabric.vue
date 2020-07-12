@@ -115,10 +115,6 @@ export default {
         defaultTextSettings
       );
       this.canvas.add(textInput);
-    },
-    changeTextColor() {
-      this.canvas.getActiveObject().set("fill", "purple");
-      this.canvas.renderAll();
     }
   },
   watch: {
@@ -140,9 +136,15 @@ export default {
     activeObject(newData) {
       const activeObject = this.canvas.getActiveObject();
       if (activeObject && newData) {
-        Object.keys(newData).forEach(key => {
-          this.canvas.getActiveObject().set(key,newData[key]);
-        });
+        const { settings, position } = newData;
+        if (settings) {
+          Object.keys(newData.settings).forEach(key => {
+            this.canvas.getActiveObject().set(key, newData.settings[key]);
+          });
+        }
+        if(position) {
+          activeObject[position]();
+        }
         this.canvas.renderAll();
       }
     }

@@ -8,6 +8,7 @@
       <button @click="changeImage">Change Image</button>
       <button @click="handleExport">Export Image</button>
       <button @click="updateActiveObject">Update Selected Item</button>
+      <button @click="centerActiveObject">Center Textbox</button>
       <div v-show="exported === false">
         <Fabric
           :height="800"
@@ -63,7 +64,12 @@ export default {
         "https://images.unsplash.com/photo-1594201741863-2bf316674ea3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80";
     },
     updateActiveObject() {
-      this.activeObject = {fill: "green"};
+      this.activeObject = {
+        settings: { fill: "pink", fontSize: 10 }
+      };
+    },
+    centerActiveObject() {
+      this.activeObject = {position: 'center'}
     }
   }
 };
