@@ -5,12 +5,13 @@
     </div>
     <div class="container">
       <button @click="addTextbox({fill:'red'})">Add Text</button>
+      <button @click="changeImage">Change Image</button>
     <div v-show="exporting === null">
       <Fabric
         :height="800"
         :width="400"
         @blob="handleImg($event)"
-        :imgUrl="'https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'"
+        :imgUrl="image"
         @export="handleExport($event)"
         :activeTextBoxColor="'purple'"
         :textboxes="textboxes"
@@ -31,7 +32,8 @@ export default {
   data() {
     return {
       exporting: null,
-      textboxes: [{fill: "pink"}, {fill: "orange"}]
+      textboxes: [{fill: "pink"}, {fill: "orange"}],
+      image: 'https://images.unsplash.com/photo-1593940768294-1699bb7f144b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1234&q=80'
     };
   },
   methods: {
@@ -52,6 +54,9 @@ export default {
     },
     addTextbox(newTextbox) {
       this.textboxes = [...this.textboxes, newTextbox];
+    },
+    changeImage() {
+      this.image = 'https://images.unsplash.com/photo-1594201741863-2bf316674ea3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80'
     }
   }
 };

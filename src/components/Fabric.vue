@@ -1,7 +1,6 @@
 <template>
   <div class="fabric-container">
     <div class="fabric-btn-container">
-      <button @click="setBackgroundImage()">Add Background</button>
       <button @click="exportImage">Export Image</button>
       <button @click="changeTextColor">Change Color</button>
     </div>
@@ -53,10 +52,11 @@ export default {
     this.canvas = new fabric.Canvas(this.$refs.canvas);
     // http://fabricjs.com/fabric-gotchas
     fabric.Object.NUM_FRACTION_DIGITS = 8;
+    this.setBackgroundImage(this.imgUrl);
   },
   methods: {
-    async setBackgroundImage() {
-      this.backgroundImage = await getImage(this.imgUrl).catch(err =>
+    async setBackgroundImage(imgUrl) {
+      this.backgroundImage = await getImage(imgUrl).catch(err =>
         console.log("err", err)
       );
       const widthAspectRatio =
@@ -130,12 +130,20 @@ export default {
   computed: {
     textInput() {
       return this.textboxes;
+    },
+    image() {
+      return this.imgUrl;
     }
   },
   watch: {
     textInput(newData, oldData) {
       if (newData.length > oldData.length) {
         this.addTextbox(newData[newData.length - 1]);
+      }
+    },
+    image(newData, oldData) {
+      if(newData !== oldData) {
+        this.setBackgroundImage(newData);
       }
     }
   }
