@@ -11,8 +11,7 @@
       <button @click="centerActiveObject">Center Textbox</button>
       <div v-show="exported === false">
         <Fabric
-          :height="800"
-          :width="400"
+          :width="300"
           :imgUrl="image"
           :textboxes="textboxes"
           :activeObject="activeObject"

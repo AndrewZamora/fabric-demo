@@ -57,8 +57,10 @@ export default {
       );
       const widthAspectRatio =
         this.backgroundImage.height / this.backgroundImage.width;
-      this.canvas.setWidth(this.height / widthAspectRatio);
-      this.canvas.setHeight(this.height);
+      const canvasHeight = this.height ? this.height : this.width * widthAspectRatio;
+      const canvasWidth = this.width ? this.width : this.height / widthAspectRatio;
+      this.canvas.setWidth(canvasWidth);
+      this.canvas.setHeight(canvasHeight);
       const imgDimensions = {
         scaleX: this.canvas.getWidth() / this.backgroundImage.width,
         scaleY: this.canvas.getHeight() / this.backgroundImage.height
@@ -72,7 +74,7 @@ export default {
     async exportImage() {
       const json = this.canvas.toJSON();
       const exportScaleX = this.canvas.getWidth() / this.backgroundImage.width;
-      const exportScaleY = this.height / this.backgroundImage.height;
+      const exportScaleY = this.canvas.getHeight() / this.backgroundImage.height;
       json.objects.forEach(object => {
         if (object.type === "textbox") {
           object.scaleX = object.scaleX / exportScaleX;
