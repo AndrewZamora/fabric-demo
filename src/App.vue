@@ -10,6 +10,7 @@
       <button @click="updateActiveObject">Update Selected Item</button>
       <button @click="centerActiveObject">Center Textbox</button>
       <button @click="changeActiveObjectColor">Change Text Color</button>
+      <Chrome v-model="colors" @input="changeActiveObjectColor"/>
       <div v-show="exported === false">
         <Fabric
           :width="300"
@@ -27,14 +28,17 @@
 
 <script>
 import Fabric from "./components/Fabric.vue";
+import { Chrome } from "vue-color";
 
 export default {
   name: "App",
   components: {
-    Fabric
+    Fabric,
+    Chrome
   },
   data() {
     return {
+      colors: "red",
       exported: false,
       textboxes: [{ fill: "pink" }, { fill: "orange" }],
       image:
@@ -70,16 +74,21 @@ export default {
       };
     },
     centerActiveObject() {
-      this.activeObject = {position: 'center'}
+      this.activeObject = { position: "center" };
     },
     handleActiveObject(activeObject) {
-      const {fill, fontSize} = activeObject;
-      this.activeObject = {settings:{fill,fontSize}}
+      const { fill, fontSize } = activeObject;
+      this.activeObject = { settings: { fill, fontSize } };
     },
     changeActiveObjectColor() {
-      this.activeObject = { settings: {
-        fill: 'blue'
-      }};
+      const { hex } = this.colors;
+      if (this.activeObject) {
+        this.activeObject = {
+          settings: {
+            fill: hex
+          }
+        };
+      }
     }
   }
 };
