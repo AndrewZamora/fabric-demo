@@ -49,6 +49,10 @@ export default {
     // http://fabricjs.com/fabric-gotchas
     fabric.Object.NUM_FRACTION_DIGITS = 8;
     this.setBackgroundImage(this.imgUrl);
+    this.canvas.on("object:selected", ()=> {
+      const activeObject = this.canvas.getActiveObject().toJSON()
+      this.$emit("active-object",activeObject);
+    });
   },
   methods: {
     async setBackgroundImage(imgUrl) {

@@ -9,6 +9,7 @@
       <button @click="handleExport">Export Image</button>
       <button @click="updateActiveObject">Update Selected Item</button>
       <button @click="centerActiveObject">Center Textbox</button>
+      <button @click="changeActiveObjectColor">Change Text Color</button>
       <div v-show="exported === false">
         <Fabric
           :width="300"
@@ -16,6 +17,7 @@
           :textboxes="textboxes"
           :activeObject="activeObject"
           :triggerExport="triggerExport"
+          @active-object="handleActiveObject($event)"
           @image-blob="handleImg($event)"
         />
       </div>
@@ -69,6 +71,15 @@ export default {
     },
     centerActiveObject() {
       this.activeObject = {position: 'center'}
+    },
+    handleActiveObject(activeObject) {
+      const {fill, fontSize} = activeObject;
+      this.activeObject = {settings:{fill,fontSize}}
+    },
+    changeActiveObjectColor() {
+      this.activeObject = { settings: {
+        fill: 'blue'
+      }};
     }
   }
 };
