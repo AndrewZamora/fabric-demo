@@ -49,10 +49,13 @@ export default {
     // http://fabricjs.com/fabric-gotchas
     fabric.Object.NUM_FRACTION_DIGITS = 8;
     this.setBackgroundImage(this.imgUrl);
-    this.canvas.on("object:selected", ()=> {
-      const activeObject = this.canvas.getActiveObject().toJSON()
+    // https://github.com/fabricjs/fabric.js/issues/4510
+    const emitActiveObject = () => {
+    const activeObject = this.canvas.getActiveObject().toJSON();
       this.$emit("active-object",activeObject);
-    });
+    };
+    this.canvas.on("selection:updated", emitActiveObject);
+    this.canvas.on("object:selected", emitActiveObject);
   },
   methods: {
     async setBackgroundImage(imgUrl) {

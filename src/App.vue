@@ -10,7 +10,8 @@
       <button @click="updateActiveObject">Update Selected Item</button>
       <button @click="centerActiveObject">Center Textbox</button>
       <button @click="changeActiveObjectColor">Change Text Color</button>
-      <Chrome v-model="colors" @input="changeActiveObjectColor"/>
+      <Chrome v-model="colors" @input="changeActiveObjectColor" />
+      <input type="number" v-model="fontSize" @change="changeActiveObjectFontSize" />
       <div v-show="exported === false">
         <Fabric
           :width="300"
@@ -38,6 +39,7 @@ export default {
   },
   data() {
     return {
+      fontSize: 0,
       colors: "red",
       exported: false,
       textboxes: [{ fill: "pink" }, { fill: "orange" }],
@@ -79,6 +81,9 @@ export default {
     handleActiveObject(activeObject) {
       const { fill, fontSize } = activeObject;
       this.activeObject = { settings: { fill, fontSize } };
+      this.colors = fill;
+      this.fontSize = fontSize;
+      console.log(fill, fontSize)
     },
     changeActiveObjectColor() {
       const { hex } = this.colors;
@@ -86,6 +91,15 @@ export default {
         this.activeObject = {
           settings: {
             fill: hex
+          }
+        };
+      }
+    },
+    changeActiveObjectFontSize() {
+      if (this.activeObject) {
+        this.activeObject = {
+          settings: {
+            fontSize: this.fontSize
           }
         };
       }
